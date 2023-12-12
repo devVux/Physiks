@@ -11,9 +11,9 @@ struct Vec2 {
 	Vec2() = default;
 	Vec2(float _x, float _y): x(_x), y(_y) { }
 
-	static Vec2 Zero;
-	static Vec2 UnitX;
-	static Vec2 UnitY;
+	inline static Vec2 Zero()	{ return Vec2(0.0f, 0.0f); };
+	inline static Vec2 UnitX()  { return Vec2(1.0f, 0.0f); };
+	inline static Vec2 UnitY()  { return Vec2(0.0f, 1.0f); };
 
 	inline Vec2& operator=(const Vec2& other) {
 		if (&other != this) {
@@ -70,7 +70,3 @@ inline std::ostream& operator<<(std::ostream& os, const Vec2& v) {
 inline float dot(const Vec2& a, const Vec2& b) {
 	return a.x * b.x + a.y * b.y;
 }
-
-Vec2 Vec2::Zero = Vec2(0.0f, 0.0f);
-Vec2 Vec2::UnitX = Vec2(1.0f, 0.0f);
-Vec2 Vec2::UnitY = Vec2(0.0f, 1.0f);
