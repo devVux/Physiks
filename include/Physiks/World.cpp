@@ -13,6 +13,7 @@ void World::update(float delta, uint32_t velocityIteraions, uint32_t positionIte
 		body->update(delta, 1, 1);
 	}
 
-	Detection::detect(mBodies);
+	const auto& jarring = Collision::detect(mBodies);
+	Collision::resolve(jarring);
 
 }
