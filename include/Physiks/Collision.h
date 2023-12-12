@@ -12,6 +12,7 @@ struct Jarring {
 	Vec2 normal;
 	float depth { 0.0f };
 
+	Jarring() = default;
 	Jarring(Body* aa, Body* bb): a(aa), b(bb) { }
 
 };
@@ -40,20 +41,20 @@ namespace Collision {
 				const Body& b = *v[j];
 
 				if (intersect(a, b)) {
-					Jarring j(v[i], v[j]);
+					Jarring jar(v[i], v[j]);
 					
 					float depth_x = a.position().x + a.size().x - b.position().x;
 					float depth_y = a.position().y + a.size().y - b.position().y;
 
 					if (depth_x > depth_y) {
-						j.depth = depth_y;
-						j.normal = Vec2::UnitY;
+						jar.depth = depth_y;
+						jar.normal = Vec2::UnitY();
 					} else {
-						j.depth = depth_x;
-						j.normal = Vec2::UnitX;
+						jar.depth = depth_x;
+						jar.normal = Vec2::UnitX();
 					}
 
-					colliding.push_back(j);
+					colliding.push_back(jar);
 
 				}
 
@@ -69,7 +70,7 @@ namespace Collision {
 
 		for (const Jarring& j : v) {
 
-			if (j.normal == Vec2::UnitX) {
+			if (j.normal == Vec2::UnitX()) {
 				j.b->setPosition({ j.b->position().x - j.depth, j.b->position().y });
 
 			} else
