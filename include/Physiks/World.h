@@ -10,6 +10,12 @@ class World {
 	public:
 
 		World(const Vec2& gravity = Vec2(0.0f, 0.0f));
+		~World() {
+			while (!mBodies.empty()) {
+				delete mBodies.back();
+				mBodies.pop_back();
+			}
+		}
 
 		void update(float delta, uint32_t velocityIterations, uint32_t positionIteration);
 
