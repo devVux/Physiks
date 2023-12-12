@@ -9,32 +9,53 @@ struct Jarring {
 	Body* a;
 	Body* b;
 
+	Vec2 normal;
+	float depth { 0.0f };
+
 	Jarring(Body* aa, Body* bb): a(aa), b(bb) { }
 
 };
 
-namespace Detection {
+namespace Collision {
 
 	static auto detect(std::vector<Body*> v) {
 
 		std::sort(v.begin(), v.end(), [](const Body* a, const Body* b) {
 			return a->position().x < b->position().x;
 		});
-		
+
 		const auto& intersect = [](const Body& a, const Body& b) {
-			return	
+			return
 				b.position().x <= a.position().x + a.size().x &&
 				b.position().y <= a.position().y + a.size().y;
 		};
 
 		std::vector<Jarring> colliding;
-		
+
 		for (size_t i = 0; i < v.size(); i++) {
 
 			for (size_t j = i + 1; j < v.size(); j++) {
 
-				if (intersect(*v[i], *v[j]))
-					colliding.emplace_back(v[i], v[j]);
+				const Body& a = *v[i];
+				const Body& b = *v[j];
+
+				if (intersect(a, b)) {
+					Jarring j(v[i], v[j]);
+					
+					float depth_x = a.position().x + a.size().x - b.position().x;
+					float depth_y = a.position().y + a.size().y - b.position().y;
+
+					if (depth_x > depth_y) {
+						j.depth = depth_y;
+						j.normal = Vec2::UnitY;
+					} else {
+						j.depth = depth_x;
+						j.normal = Vec2::UnitX;
+					}
+
+					colliding.push_back(j);
+
+				}
 
 			}
 
@@ -44,14 +65,17 @@ namespace Detection {
 
 	}
 
-}
-
-namespace Resolution {
-
 	static void resolve(const std::vector<Jarring> v) {
 
+		for (const Jarring& j : v) {
 
+			if (j.normal == Vec2::UnitX) {
+				j.b->setPosition({ j.b->position().x - j.depth, j.b->position().y });
 
+			} else
+				j.b->setPosition({ j.b->position().x, j.b->position().y - j.depth });
+
+		}
 
 	}
 
